@@ -22,14 +22,28 @@ for file_name in file_names:
 merged_df = pd.concat(dataframes)
 
 # Supprimer les colonnes inutiles
-columns_to_drop = ['Identifiant de document', 'Reference document', '1 Articles CGI', '2 Articles CGI', '3 Articles CGI', '4 Articles CGI', '5 Articles CGI', 'No disposition', 'No voie', 'B/T/Q', 'Code voie', 'No plan', 'No Volume', '1er lot', 'Surface Carrez du 1er lot', '2eme lot', 'Surface Carrez du 2eme lot', '3eme lot', 'Surface Carrez du 3eme lot', '4eme lot', 'Surface Carrez du 4eme lot', '5eme lot', 'Surface Carrez du 5eme lot', 'Nombre de lots', 'Identifiant local']
+columns_to_drop = ['Identifiant de document', 'Reference document', '1 Articles CGI', '2 Articles CGI', '3 Articles CGI', '4 Articles CGI', '5 Articles CGI', 'No disposition', 'No plan', 'No Volume', '1er lot', '2eme lot', '3eme lot', '4eme lot', '5eme lot', 'Nombre de lots', 'Identifiant local', "Nature culture", "Nature culture speciale"]
 merged_df.drop(columns=columns_to_drop, inplace=True)
-
-# Supprimer les enregistrements avec des valeurs manquantes
-merged_df.dropna(inplace=True)
 
 # Convertir la colonne 'Valeur fonciere' en format numérique
 merged_df['Valeur fonciere'] = merged_df['Valeur fonciere'].str.replace(',', '.').astype(float)
+
+merged_df['Surface Carrez du 1er lot'] = merged_df['Surface Carrez du 1er lot'].str.replace(',', '.').astype(float)
+merged_df['Surface Carrez du 2eme lot'] = merged_df['Surface Carrez du 2eme lot'].str.replace(',', '.').astype(float)
+merged_df['Surface Carrez du 3eme lot'] = merged_df['Surface Carrez du 3eme lot'].str.replace(',', '.').astype(float)
+merged_df['Surface Carrez du 4eme lot'] = merged_df['Surface Carrez du 4eme lot'].str.replace(',', '.').astype(float)
+merged_df['Surface Carrez du 5eme lot'] = merged_df['Surface Carrez du 5eme lot'].str.replace(',', '.').astype(float)
+
+merged_df['Surface Carrez totale'] = merged_df['Surface Carrez du 1er lot'].fillna(0).astype(float) + \
+                                     merged_df['Surface Carrez du 2eme lot'].fillna(0).astype(float) + \
+                                     merged_df['Surface Carrez du 3eme lot'].fillna(0).astype(float) + \
+                                     merged_df['Surface Carrez du 4eme lot'].fillna(0).astype(float) + \
+                                     merged_df['Surface Carrez du 5eme lot'].fillna(0).astype(float)
+
+merged_df['No voie'] = merged_df['No voie'].fillna(0).astype(int)
+merged_df['Code postal'] = merged_df['Code postal'].fillna(0).astype(int)
+merged_df['Code type local'] = merged_df['Code type local'].fillna(0).astype(int)
+merged_df['Nombre pieces principales'] = merged_df['Nombre pieces principales'].fillna(0).astype(int)
 
 # Fractionner les données en sous-ensembles d'apprentissage et de test
 # Par exemple, supposons que vous souhaitez utiliser 80% des données pour l'apprentissage et 20% pour le test
